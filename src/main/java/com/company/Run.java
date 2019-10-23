@@ -1,13 +1,20 @@
 package com.company;
 
-import com.company.test.TestClass;
+import com.company.core.ClassRunner;
 
 public class Run {
 
-
     public static void main(String[] args) throws Exception {
         ClassRunner classRunner = new ClassRunner();
-        classRunner.runMethods(TestClass.class);
-    }
+        if (args.length == 0) {
+            throw new IllegalArgumentException("Please add a class to test.");
+        }
 
+        try {
+            Class<?> aClass = Class.forName(args[0]);
+            classRunner.runMethods(aClass);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 }
