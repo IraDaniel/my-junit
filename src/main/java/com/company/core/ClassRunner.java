@@ -1,6 +1,10 @@
 package com.company.core;
 
+import com.company.core.exception.InitializationException;
+import com.company.core.exception.ValidationException;
+
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,20 +25,23 @@ public class ClassRunner {
         processResult(testMethods);
     }
 
-    /**
-     * Validate that class contains at least one test method and all test methods are valid
-     */
-    private static <T> void validateTestClass(Class<T> clazz) {
-//        List<String> errors;
-//        Arrays.stream(clazz.getDeclaredMethods())
-//                .filter(MethodValidator::isTestMethod)
-    }
-
     private static List<TestMethod> findTestMethods(Class c) {
-        return Arrays.stream(c.getDeclaredMethods())
-                .filter(MethodValidator::isTestMethod)
+        List<String> messages = new ArrayList<>();
+        List<TestMethod> testMethods = Arrays.stream(c.getDeclaredMethods())
+                .filter(method -> {
+                    try {
+                        return MethodValidator.isTestMethod(method);
+                    } catch (ValidationException e) {
+                        messages.add(e.getMessage());
+                        return false;
+                    }
+                })
                 .map(TestMethod::new)
                 .collect(Collectors.toList());
+        if (!messages.isEmpty()) {
+            throw new InitializationException(messages);
+        }
+        return testMethods;
     }
 
     private void processResult(List<TestMethod> testMethods) {

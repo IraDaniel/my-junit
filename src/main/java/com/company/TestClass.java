@@ -4,16 +4,19 @@ import com.company.core.Test;
 
 import static com.company.core.AssertUtils.assertThat;
 
+/**
+ * This class will be launched with an initialization exception because it contains invalid test methods
+ */
 public class TestClass {
 
     @Test
-    public void test() {
-        System.out.println("This is a test method:test()");
+    public void testSuccess() {
+        System.out.println("This is a testSuccess method:testSuccess()");
     }
 
     @Test
-    public void running() {
-        System.out.println("This is a test method:running()");
+    public void testThrowException() {
+        System.out.println("This is a testSuccess method: testThrowException()");
         System.out.println(1 / 0);
     }
 

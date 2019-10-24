@@ -1,19 +1,23 @@
 package com.company.core;
 
+import com.company.core.exception.ValidationException;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MethodValidator {
+    private MethodValidator() {
+    }
 
     private static final String ERROR_METHOD_SHOULD_BE_VOID = "Method %s should be void";
     private static final String ERROR_METHOD_SHOULD_HAVE_NO_PARAMETERS = "Method %s should have no parameters";
 
-    public static boolean isTestMethod(Method method) throws InitializationException{
+    public static boolean isTestMethod(Method method) throws ValidationException {
         if (method.isAnnotationPresent(Test.class)) {
             List<String> errors = validateMethod(method);
             if (!errors.isEmpty()) {
-                throw new InitializationException(errors);
+                throw new ValidationException(errors);
             }
             return true;
         }
